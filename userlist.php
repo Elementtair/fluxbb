@@ -141,7 +141,7 @@ $user_ids = array();
 	for ($i = 0;$cur_user_id = $db->result($result, $i);$i++)
 		$user_ids[] = $cur_user_id;
 		
-if (!empty(user_ids))
+if (!empty($user_ids))
 {
 	
 

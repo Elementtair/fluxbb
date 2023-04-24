@@ -226,7 +226,7 @@ if (isset($_POST['form_sent']))
 
 				// Get any subscribed users that should be notified (banned users are excluded)
 				$result = $db->query('SELECT u.id, u.email, u.notify_with_post, u.language FROM '.$db->prefix.'users AS u INNER JOIN '.$db->prefix.'topic_subscriptions AS s ON u.id=s.user_id LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id='.$cur_posting['id'].' AND fp.group_id=u.group_id) LEFT JOIN '.$db->prefix.'online AS o ON u.id=o.user_id LEFT JOIN '.$db->prefix.'bans AS b ON u.username=b.username WHERE b.username IS NULL AND COALESCE(o.logged, u.last_visit)>'.$previous_post_time.' AND (fp.read_forum IS NULL OR fp.read_forum=1) AND s.topic_id='.$tid.' AND u.id!='.$pun_user['id']) or error('Unable to fetch subscription info', __FILE__, __LINE__, $db->error());
-				$cur_subscriber = $db->fetch_assoc($result))
+				$cur_subscriber = $db->fetch_assoc($result);
 				
 				if (is_array($cur_subscriber))
 				{
@@ -337,7 +337,7 @@ if (isset($_POST['form_sent']))
 			{
 				// Get any subscribed users that should be notified (banned users are excluded)
 				$result = $db->query('SELECT u.id, u.email, u.notify_with_post, u.language FROM '.$db->prefix.'users AS u INNER JOIN '.$db->prefix.'forum_subscriptions AS s ON u.id=s.user_id LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id='.$cur_posting['id'].' AND fp.group_id=u.group_id) LEFT JOIN '.$db->prefix.'bans AS b ON u.username=b.username WHERE b.username IS NULL AND (fp.read_forum IS NULL OR fp.read_forum=1) AND s.forum_id='.$cur_posting['id'].' AND u.id!='.$pun_user['id']) or error('Unable to fetch subscription info', __FILE__, __LINE__, $db->error());
-				$cur_subscriber = $db->fetch_assoc($result));
+				$cur_subscriber = $db->fetch_assoc($result);
 				if (is_array($cur_subscriber))
 				{
 					require_once PUN_ROOT.'include/email.php';
@@ -408,7 +408,7 @@ if (isset($_POST['form_sent']))
 								pun_mail($cur_subscriber['email'], $notification_emails[$cur_subscriber['language']][2], $notification_emails[$cur_subscriber['language']][3]);
 						}
 					}
-					while ($cur_subscriber = $db->fetch_assoc($result))
+					while ($cur_subscriber = $db->fetch_assoc($result));
 					unset($cleaned_message);
 				}
 			}
@@ -474,7 +474,7 @@ if ($tid)
 			message($lang_common['Bad request'], false, '404 Not Found');
 
 		$result = $db->query('SELECT poster, message FROM '.$db->prefix.'posts WHERE id='.$qid.' AND topic_id='.$tid) or error('Unable to fetch quote info', __FILE__, __LINE__, $db->error());
-		$post_info = $db->fetch_row($result));
+		$post_info = $db->fetch_row($result);
 		
 		if (!$post_info)
 			message($lang_common['Bad request'], false, '404 Not Found');
