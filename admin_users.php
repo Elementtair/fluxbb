@@ -78,9 +78,10 @@ if (isset($_GET['ip_stats']))
 <?php
 
 	$result = $db->query('SELECT poster_ip, MAX(posted) AS last_used, COUNT(id) AS used_times FROM '.$db->prefix.'posts WHERE poster_id='.$ip_stats.' GROUP BY poster_ip ORDER BY last_used DESC LIMIT '.$start_from.', 50') or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
-	if ($db->num_rows($result))
+	$cur_ip = $db->fetch_assoc($result);
+	if (is_array($cur_ip))
 	{
-		while ($cur_ip = $db->fetch_assoc($result))
+		do
 		{
 
 ?>
@@ -93,6 +94,7 @@ if (isset($_GET['ip_stats']))
 <?php
 
 		}
+		while ($cur_ip = $db->fetch_assoc($result))
 	}
 	else
 		echo "\t\t\t\t".'<tr><td class="tcl" colspan="4">'.$lang_admin_users['Results no posts found'].'</td></tr>'."\n";
@@ -127,7 +129,7 @@ if (isset($_GET['show_users']))
 		message($lang_admin_users['Bad IP message']);
 
 	// Fetch user count
-	$result = $db->query('SELECT COUNT(DISTINCT poster_id, poster) FROM '.$db->prefix.'posts WHERE poster_ip=\''.$db->escape($ip).'\'') or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT COUNT(*) FROM (SELECT DISTINCT poster_id FROM '.$db->prefix.'posts WHERE poster_ip=\''.$db->escape($ip).'\') AS temp') or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
 	$num_users = $db->result($result);
 
 	// Determine the user offset (based on $_GET['p'])
@@ -853,9 +855,11 @@ else if (isset($_GET['find_user']))
 <?php
 
 	$result = $db->query('SELECT u.id, u.username, u.email, u.title, u.num_posts, u.admin_note, g.g_id, g.g_user_title FROM '.$db->prefix.'users AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id>1'.(!empty($conditions) ? ' AND '.implode(' AND ', $conditions) : '').' ORDER BY '.$db->escape($order_by).' '.$db->escape($direction).' LIMIT '.$start_from.', 50') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
-	if ($db->num_rows($result))
+	$user_data = $db->fetch_assoc($result)
+	
+	if(is_array($user_data))
 	{
-		while ($user_data = $db->fetch_assoc($result))
+		do
 		{
 			$user_title = get_title($user_data);
 
@@ -879,6 +883,7 @@ else if (isset($_GET['find_user']))
 <?php
 
 		}
+		while ($user_data = $db->fetch_assoc($result))
 	}
 	else
 		echo "\t\t\t\t".'<tr><td class="tcl" colspan="6">'.$lang_admin_users['No match'].'</td></tr>'."\n";
