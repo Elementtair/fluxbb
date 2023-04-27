@@ -77,7 +77,7 @@ if ($action == 'change_pass')
 				
 				
 
-			list($group_id, $is_moderator) = $user_info);
+			list($group_id, $is_moderator) = ($user_info);
 
 			if ($pun_user['g_mod_edit_users'] == '0' || $pun_user['g_mod_change_passwords'] == '0' || $group_id == PUN_ADMIN || $is_moderator == '1')
 				message($lang_common['No permission'], false, '403 Forbidden');
