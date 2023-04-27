@@ -27,10 +27,10 @@ if (isset($_GET['get_host']))
 			message($lang_common['Bad request'], false, '404 Not Found');
 
 		$result = $db->query('SELECT poster_ip FROM '.$db->prefix.'posts WHERE id='.$get_host) or error('Unable to fetch post IP address', __FILE__, __LINE__, $db->error());
-		if (!$db->num_rows($result))
-			message($lang_common['Bad request'], false, '404 Not Found');
-
+		
 		$ip = $db->result($result);
+		if (!$ip)
+			message($lang_common['Bad request'], false, '404 Not Found');
 	}
 
 	// Load the misc.php language file
@@ -70,10 +70,13 @@ if (isset($_GET['tid']))
 
 	// Fetch some info about the topic
 	$result = $db->query('SELECT t.subject, t.num_replies, t.first_post_id, f.id AS forum_id, forum_name FROM '.$db->prefix.'topics AS t INNER JOIN '.$db->prefix.'forums AS f ON f.id=t.forum_id LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id=f.id AND fp.group_id='.$pun_user['g_id'].') WHERE (fp.read_forum IS NULL OR fp.read_forum=1) AND f.id='.$fid.' AND t.id='.$tid.' AND t.moved_to IS NULL') or error('Unable to fetch topic info', __FILE__, __LINE__, $db->error());
-	if (!$db->num_rows($result))
+	
+	$cur_topic = $db->fetch_assoc($result);
+	
+	if (!$cur_topic)
 		message($lang_common['Bad request'], false, '404 Not Found');
 
-	$cur_topic = $db->fetch_assoc($result);
+
 
 	// Delete one or more posts
 	if (isset($_POST['delete_posts']) || isset($_POST['delete_posts_comply']))
@@ -171,7 +174,7 @@ if (isset($_GET['tid']))
 
 			// Verify that the move to forum ID is valid
 			$result = $db->query('SELECT 1 FROM '.$db->prefix.'forums AS f LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.group_id='.$pun_user['g_id'].' AND fp.forum_id='.$move_to_forum.') WHERE f.redirect_url IS NULL AND (fp.post_topics IS NULL OR fp.post_topics=1)') or error('Unable to fetch forum permissions', __FILE__, __LINE__, $db->error());
-			if (!$db->num_rows($result))
+			if (!$db->result($result))
 				message($lang_common['Bad request'], false, '404 Not Found');
 
 			// Load the post.php language file
@@ -438,7 +441,7 @@ if (isset($_REQUEST['move_topics']) || isset($_POST['move_topics_to']))
 
 		// Verify that the move to forum ID is valid
 		$result = $db->query('SELECT 1 FROM '.$db->prefix.'forums AS f LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.group_id='.$pun_user['g_id'].' AND fp.forum_id='.$move_to_forum.') WHERE f.redirect_url IS NULL AND (fp.post_topics IS NULL OR fp.post_topics=1)') or error('Unable to fetch forum permissions', __FILE__, __LINE__, $db->error());
-		if (!$db->num_rows($result))
+		if (!$db->result($result))
 			message($lang_common['Bad request'], false, '404 Not Found');
 
 		// Delete any redirect topics if there are any (only if we moved/copied the topic back to where it was once moved from)
@@ -678,7 +681,7 @@ else if (isset($_POST['delete_topics']) || isset($_POST['delete_topics_comply'])
 		if ($pun_user['g_id'] != PUN_ADMIN)
 		{
 			$result = $db->query('SELECT 1 FROM '.$db->prefix.'posts WHERE topic_id IN('.$topics.') AND poster_id IN('.implode(',', get_admin_ids()).')') or error('Unable to check posts', __FILE__, __LINE__, $db->error());
-			if ($db->num_rows($result))
+			if ($db->result($result))
 				message($lang_common['No permission'], false, '403 Forbidden');
 		}
 
@@ -815,7 +818,7 @@ require PUN_ROOT.'lang/'.$pun_user['language'].'/forum.php';
 
 // Fetch some info about the forum
 $result = $db->query('SELECT f.forum_name, f.redirect_url, f.num_topics, f.sort_by FROM '.$db->prefix.'forums AS f LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id=f.id AND fp.group_id='.$pun_user['g_id'].') WHERE (fp.read_forum IS NULL OR fp.read_forum=1) AND f.id='.$fid) or error('Unable to fetch forum info', __FILE__, __LINE__, $db->error());
-if (!$db->num_rows($result))
+if (!$db->result($result))
 	message($lang_common['Bad request'], false, '404 Not Found');
 
 $cur_forum = $db->fetch_assoc($result);
@@ -893,7 +896,7 @@ require PUN_ROOT.'header.php';
 $result = $db->query('SELECT id FROM '.$db->prefix.'topics WHERE forum_id='.$fid.' ORDER BY sticky DESC, '.$sort_by.', id DESC LIMIT '.$start_from.', '.$pun_user['disp_topics']) or error('Unable to fetch topic IDs', __FILE__, __LINE__, $db->error());
 
 // If there are topics in this forum
-if ($db->num_rows($result))
+if ($db->result($result))
 {
 	$topic_ids = array();
 	for ($i = 0;$cur_topic_id = $db->result($result, $i);$i++)
