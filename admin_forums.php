@@ -431,8 +431,9 @@ else
 
 // Display all the categories and forums
 $result = $db->query('SELECT c.id AS cid, c.cat_name, f.id AS fid, f.forum_name, f.disp_position FROM '.$db->prefix.'categories AS c INNER JOIN '.$db->prefix.'forums AS f ON c.id=f.cat_id ORDER BY c.disp_position, c.id, f.disp_position') or error('Unable to fetch category/forum list', __FILE__, __LINE__, $db->error());
+$cur_forum = $fetch_assoc($result);
 
-if ($db->num_rows($result))
+if (is_array($cur_forum))
 {
 
 ?>
@@ -445,7 +446,7 @@ if ($db->num_rows($result))
 $cur_index = 4;
 
 $cur_category = 0;
-while ($cur_forum = $db->fetch_assoc($result))
+do 
 {
 	if ($cur_forum['cid'] != $cur_category) // A new category since last iteration?
 	{
@@ -480,6 +481,7 @@ while ($cur_forum = $db->fetch_assoc($result))
 <?php
 
 }
+while ($cur_forum = $db->fetch_assoc($result))
 
 ?>
 							</tbody>
