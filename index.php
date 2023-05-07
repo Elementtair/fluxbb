@@ -21,18 +21,20 @@ require PUN_ROOT.'lang/'.$pun_user['language'].'/index.php';
 if (!$pun_user['is_guest'])
 {
 	$result = $db->query('SELECT f.id, f.last_post FROM '.$db->prefix.'forums AS f LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id=f.id AND fp.group_id='.$pun_user['g_id'].') WHERE (fp.read_forum IS NULL OR fp.read_forum=1) AND f.last_post>'.$pun_user['last_visit']) or error('Unable to fetch forum list', __FILE__, __LINE__, $db->error());
-
-	if ($db->num_rows($result))
+	$cur_forum = $db->fetch_assoc($result)
+	
+	if (is_array($cur_forum)
 	{
 		$forums = $new_topics = array();
 		$tracked_topics = get_tracked_topics();
 
-		while ($cur_forum = $db->fetch_assoc($result))
+		do
 		{
 			if (!isset($tracked_topics['forums'][$cur_forum['id']]) || $tracked_topics['forums'][$cur_forum['id']] < $cur_forum['last_post'])
 				$forums[$cur_forum['id']] = $cur_forum['last_post'];
 		}
-
+		while ($cur_forum = $db->fetch_assoc($result))
+		
 		if (!empty($forums))
 		{
 			if (empty($tracked_topics['topics']))
