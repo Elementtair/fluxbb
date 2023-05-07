@@ -113,9 +113,10 @@ h1 {
 	if ($end_at > 0)
 	{
 		$result = $db->query('SELECT id FROM '.$db->prefix.'posts WHERE id > '.$end_at.' ORDER BY id ASC LIMIT 1') or error('Unable to fetch next ID', __FILE__, __LINE__, $db->error());
-
-		if ($db->num_rows($result))
-			$query_str = '?action=rebuild&csrf_token='.pun_csrf_token().'&i_per_page='.$per_page.'&i_start_at='.$db->result($result);
+		$next = $db->result($result);
+		
+		if (!empty($next))
+			$query_str = '?action=rebuild&csrf_hash='.csrf_hash().'&i_per_page='.$per_page.'&i_start_at='.$next;
 	}
 
 	$db->end_transaction();
@@ -237,8 +238,7 @@ if ($action == 'prune')
 
 // Get the first post ID from the db
 $result = $db->query('SELECT id FROM '.$db->prefix.'posts ORDER BY id ASC LIMIT 1') or error('Unable to fetch topic info', __FILE__, __LINE__, $db->error());
-if ($db->num_rows($result))
-	$first_id = $db->result($result);
+$first_id = $db->result($result);
 
 $page_title = array(pun_htmlspecialchars($pun_config['o_board_title']), $lang_admin_common['Admin'], $lang_admin_common['Maintenance']);
 define('PUN_ACTIVE_PAGE', 'admin');
