@@ -222,10 +222,12 @@ else if (isset($_GET['edit_forum']))
 
 	// Fetch forum info
 	$result = $db->query('SELECT id, forum_name, forum_desc, redirect_url, num_topics, sort_by, cat_id FROM '.$db->prefix.'forums WHERE id='.$forum_id) or error('Unable to fetch forum info', __FILE__, __LINE__, $db->error());
-	if (!$db->num_rows($result))
+	$cur_forum = $db->fetch_assoc($result);
+	
+	if (!$cur_forum)
 		message($lang_common['Bad request'], false, '404 Not Found');
 
-	$cur_forum = $db->fetch_assoc($result);
+	
 
 	$page_title = array(pun_htmlspecialchars($pun_config['o_board_title']), $lang_admin_common['Admin'], $lang_admin_common['Forums']);
 	define('PUN_ACTIVE_PAGE', 'admin');
@@ -372,8 +374,9 @@ generate_admin_menu('forums');
 <?php
 
 $result = $db->query('SELECT id, cat_name FROM '.$db->prefix.'categories ORDER BY disp_position') or error('Unable to fetch category list', __FILE__, __LINE__, $db->error());
+$cur_cat = $db->fetch_assoc($result);
 
-if ($db->num_rows($result))
+if (is_array($cur_cat))
 {
 
 ?>
@@ -388,9 +391,11 @@ if ($db->num_rows($result))
 										<select name="add_to_cat" tabindex="1">
 <?php
 
-	while ($cur_cat = $db->fetch_assoc($result))
+	do
+	{
 		echo "\t\t\t\t\t\t\t\t\t\t\t".'<option value="'.$cur_cat['id'].'">'.pun_htmlspecialchars($cur_cat['cat_name']).'</option>'."\n";
-
+	} while ($cur_cat = $db->fetch_assoc($result))
+	
 ?>
 										</select>
 										<span><?php echo $lang_admin_forums['Add forum help'] ?></span>
