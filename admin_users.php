@@ -94,7 +94,7 @@ if (isset($_GET['ip_stats']))
 <?php
 
 		}
-		while ($cur_ip = $db->fetch_assoc($result))
+		while ($cur_ip = $db->fetch_assoc($result));
 	}
 	else
 		echo "\t\t\t\t".'<tr><td class="tcl" colspan="4">'.$lang_admin_users['Results no posts found'].'</td></tr>'."\n";

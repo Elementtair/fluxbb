@@ -147,7 +147,7 @@ if (is_array($cur_word))
 	do
 	{
 		echo "\t\t\t\t\t\t\t\t".'<tr><td class="tcl"><input type="text" name="search_for['.$cur_word['id'].']" value="'.pun_htmlspecialchars($cur_word['search_for']).'" size="24" maxlength="60" /></td><td class="tc2"><input type="text" name="replace_with['.$cur_word['id'].']" value="'.pun_htmlspecialchars($cur_word['replace_with']).'" size="24" maxlength="60" /></td><td><input type="submit" name="update['.$cur_word['id'].']" value="'.$lang_admin_common['Update'].'" />&#160;<input type="submit" name="remove['.$cur_word['id'].']" value="'.$lang_admin_common['Remove'].'" /></td></tr>'."\n";
-	} while ($cur_word = $db->fetch_assoc($result))
+	} while ($cur_word = $db->fetch_assoc($result));
 ?>
 							</tbody>
 							</table>

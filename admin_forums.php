@@ -394,7 +394,7 @@ if (is_array($cur_cat))
 	do
 	{
 		echo "\t\t\t\t\t\t\t\t\t\t\t".'<option value="'.$cur_cat['id'].'">'.pun_htmlspecialchars($cur_cat['cat_name']).'</option>'."\n";
-	} while ($cur_cat = $db->fetch_assoc($result))
+	} while ($cur_cat = $db->fetch_assoc($result));
 	
 ?>
 										</select>
@@ -481,7 +481,7 @@ do
 <?php
 
 }
-while ($cur_forum = $db->fetch_assoc($result))
+while ($cur_forum = $db->fetch_assoc($result));
 
 ?>
 							</tbody>
