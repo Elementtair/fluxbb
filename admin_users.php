@@ -852,7 +852,7 @@ else if (isset($_GET['find_user']))
 <?php
 
 	$result = $db->query('SELECT u.id, u.username, u.email, u.title, u.num_posts, u.admin_note, g.g_id, g.g_user_title FROM '.$db->prefix.'users AS u LEFT JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id WHERE u.id>1'.(!empty($conditions) ? ' AND '.implode(' AND ', $conditions) : '').' ORDER BY '.$db->escape($order_by).' '.$db->escape($direction).' LIMIT '.$start_from.', 50') or error('Unable to fetch user info', __FILE__, __LINE__, $db->error());
-	$user_data = $db->fetch_assoc($result)
+	$user_data = $db->fetch_assoc($result);
 	
 	if(is_array($user_data))
 	{
@@ -880,7 +880,7 @@ else if (isset($_GET['find_user']))
 <?php
 
 		}
-		while ($user_data = $db->fetch_assoc($result))
+		while ($user_data = $db->fetch_assoc($result));
 	}
 	else
 		echo "\t\t\t\t".'<tr><td class="tcl" colspan="6">'.$lang_admin_users['No match'].'</td></tr>'."\n";
