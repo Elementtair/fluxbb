@@ -298,7 +298,7 @@ function strip_search_index($post_ids)
 					$word_ids .= ($word_ids != '') ? ','.$row[0] : $row[0];
 
 				
-				if ($word_ids != ''))
+				if ($word_ids != '')
 				{
 					
 					$db->query('DELETE FROM '.$db->prefix.'search_words WHERE id IN('.$word_ids.')') or error('Unable to delete search index word', __FILE__, __LINE__, $db->error());
