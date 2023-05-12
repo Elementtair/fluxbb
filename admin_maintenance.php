@@ -116,7 +116,7 @@ h1 {
 		$next = $db->result($result);
 		
 		if (!empty($next))
-			$query_str = '?action=rebuild&csrf_hash='.csrf_hash().'&i_per_page='.$per_page.'&i_start_at='.$next;
+			$query_str = '?action=rebuild&csrf_token='.pun_csrf_token().'&i_per_page='.$per_page.'&i_start_at='.$next;
 	}
 
 	$db->end_transaction();
