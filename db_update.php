@@ -414,7 +414,7 @@ function convert_table_utf8($table, $callback, $old_charset, $key = null, $start
 		if (!is_null($start_at) && $end_at > 0)
 		{
 			$result = $db->query('SELECT 1 FROM '.$table.' WHERE '.$key.'>'.$end_at.' ORDER BY '.$key.' ASC LIMIT 1') or error('Unable to check for next row', __FILE__, __LINE__, $db->error());
-			iif (empty($db->result($result)))
+			if (empty($db->result($result)))
 				return true;
 
 			return $end_at;
