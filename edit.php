@@ -25,7 +25,6 @@ $cur_post = $db->fetch_assoc($result);
 if (!$cur_post)
 	message($lang_common['Bad request'], false, '404 Not Found');
 
-$cur_post = $db->fetch_assoc($result);
 
 // Sort out who the moderators are and if we are currently a moderator (or an admin)
 $mods_array = ($cur_post['moderators'] != '') ? unserialize($cur_post['moderators']) : array();
